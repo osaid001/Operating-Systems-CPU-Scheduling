@@ -10,17 +10,23 @@ This project provides an implementation of various CPU scheduling algorithms and
 # CPU Scheduling Algorithms:
 
 First-Come, First-Served (FCFS): Simple scheduling algorithm where the process that arrives first gets executed first.
+
 Shortest Job Next (SJN): Selects the process with the smallest execution time.
+
 Priority Scheduling: Assigns priority to each process, and the process with the highest priority gets executed first.
+
 Round Robin (RR): Processes are assigned a fixed time in a cyclic order, ensuring fair CPU allocation.
+
 Multilevel Queue Scheduling: Segregates the processes into different queues based on priority and uses different scheduling algorithms for each queue.
 
 # Deadlock Management:
 
 Techniques to detect, prevent, and avoid deadlocks in the system.
-Graphical User Interface (GUI):
+
+# Graphical User Interface (GUI):
 
 Interactive interface to visualize the scheduling and deadlock management processes.
+
 Built using Visual Studio for a seamless user experience.
 
 # Technologies Used
