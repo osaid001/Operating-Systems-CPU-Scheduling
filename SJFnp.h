@@ -1,8 +1,9 @@
 #pragma once
 
-#include "ProcessSJFnp.h"
+#include "processSJFnp.h"
 
-class SchedulerSJF {
+class SchedulerSJF
+{
 private:
     ProcessSJ** processes;
     int numProcesses;
@@ -16,5 +17,6 @@ public:
     void getWaitingTimes(int* waitingTimes);
     void getResponseTimes(int* responseTimes);
     void getProcessOrder(string* processIds);
+    int* recordProcessExecution(int& total_time);
     ~SchedulerSJF();
 };
