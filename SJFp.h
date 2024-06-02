@@ -52,5 +52,7 @@ public:
     void getWaitingTimes(int waitingTimes[]) const;
     void getResponseTimes(int responseTimes[]) const;
     void getProcessOrder(string processIds[]) const;
+    int* recordProcessExecution(int& total_time);
+
     ~SchedulerSJFpre();
 };
