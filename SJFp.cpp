@@ -1,4 +1,6 @@
 #include "SJFp.h"
+#include <vector>
+#include <algorithm>
 
 ProcessSJpre::ProcessSJpre(string pid, int arrival, int burst)
     : processId(pid), arrivalTime(arrival), burstTime(burst), remainingTime(burst),
@@ -40,11 +42,12 @@ void SchedulerSJFpre::schedulePreemptive() {
     bool* completed = new bool[numProcesses]();
     int currentTime = 0;
     int completedCount = 0;
-    int idx = -1;
 
     while (completedCount < numProcesses) {
+        int idx = -1;
         int shortestRemainingTime = INT_MAX;
 
+        // Find the process with the shortest remaining time that has arrived
         for (int i = 0; i < numProcesses; ++i) {
             if (!completed[i] && processes[i]->getArrivalTime() <= currentTime && processes[i]->getRemainingTime() < shortestRemainingTime) {
                 shortestRemainingTime = processes[i]->getRemainingTime();
@@ -53,13 +56,16 @@ void SchedulerSJFpre::schedulePreemptive() {
         }
 
         if (idx != -1) {
+            // If the process is starting for the first time, set its response time
             if (processes[idx]->getRemainingTime() == processes[idx]->getBurstTime()) {
                 processes[idx]->setResponseTime(currentTime);
             }
 
+            // Execute the process for one unit of time
             processes[idx]->setRemainingTime(processes[idx]->getRemainingTime() - 1);
             currentTime++;
 
+            // If the process finishes, update its completion status
             if (processes[idx]->getRemainingTime() == 0) {
                 processes[idx]->setCompletionTime(currentTime);
                 processes[idx]->calculateTurnAroundTime();
@@ -69,12 +75,14 @@ void SchedulerSJFpre::schedulePreemptive() {
             }
         }
         else {
+            // If no process is ready to run, increment the time
             currentTime++;
         }
     }
 
     delete[] completed;
 }
+
 
 void SchedulerSJFpre::getCompletionTimes(int completionTimes[]) const {
     for (int i = 0; i < numProcesses; ++i) {
@@ -100,9 +108,18 @@ void SchedulerSJFpre::getResponseTimes(int responseTimes[]) const {
     }
 }
 
-void SchedulerSJFpre::getProcessOrder(string processIds[]) const {
+void SchedulerSJFpre::getProcessOrder(string processIds[]) const
+{
+    std::vector<std::pair<int, string>> completionTimeWithId;
+
     for (int i = 0; i < numProcesses; ++i) {
-        processIds[i] = processes[i]->getProcessId();
+        completionTimeWithId.push_back({ processes[i]->getCompletionTime(), processes[i]->getProcessId() });
+    }
+
+    std::sort(completionTimeWithId.begin(), completionTimeWithId.end());
+
+    for (int i = 0; i < numProcesses; ++i) {
+        processIds[i] = completionTimeWithId[i].second;
     }
 }
 
@@ -111,4 +128,65 @@ SchedulerSJFpre::~SchedulerSJFpre() {
         delete processes[i];
     }
     delete[] processes;
+}
+
+int* SchedulerSJFpre::recordProcessExecution(int& total_time)
+{
+    // schedule();
+
+    total_time = 0;
+    for (int i = 0; i < numProcesses; ++i) {
+        if (processes[i]->getCompletionTime() > total_time) {
+            total_time = processes[i]->getCompletionTime();
+        }
+    }
+
+    int* timeline = new int[total_time]();
+
+    int* remainingTimes = new int[numProcesses];
+    for (int i = 0; i < numProcesses; ++i) {
+        remainingTimes[i] = processes[i]->getBurstTime();
+    }
+
+    bool* completed = new bool[numProcesses]();
+    int currentTime = 0;
+    int completedCount = 0;
+
+    while (completedCount < numProcesses) {
+        int idx = -1;
+        int shortestRemainingTime = INT_MAX;
+
+        for (int i = 0; i < numProcesses; ++i) {
+            if (!completed[i] && processes[i]->getArrivalTime() <= currentTime && remainingTimes[i] < shortestRemainingTime) {
+                shortestRemainingTime = remainingTimes[i];
+                idx = i;
+            }
+        }
+
+        if (idx != -1) {
+            if (remainingTimes[idx] == processes[idx]->getBurstTime()) {
+                processes[idx]->setResponseTime(currentTime);
+            }
+
+            timeline[currentTime] = stoi(processes[idx]->getProcessId());
+            remainingTimes[idx]--;
+            currentTime++;
+
+            if (remainingTimes[idx] == 0) {
+                processes[idx]->setCompletionTime(currentTime);
+                processes[idx]->calculateTurnAroundTime();
+                processes[idx]->calculateWaitingTime();
+                completed[idx] = true;
+                completedCount++;
+            }
+        }
+        else {
+            currentTime++;
+        }
+    }
+
+    delete[] remainingTimes;
+    delete[] completed;
+
+    return timeline;
 }
