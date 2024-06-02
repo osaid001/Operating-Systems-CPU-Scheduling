@@ -751,11 +751,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		if (ddchk.checkrepetitions(total_rec, proc, recources))
 		{
-			MessageBox::Show("more than 1 processes are allocated same recource!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("more than 1 processes are allocated same recource!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (!ddchk.checkrange(total_rec, proc, recources, needed))
 		{
-			MessageBox::Show("allocated or needed recources not valid!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("allocated or needed recources not valid!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (ddchk.chkdeadlock(total_rec, proc, process_ids, recources, needed))
 		{
@@ -768,11 +768,14 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			obj.getWaitingTimes(waiting_times);
 			obj.getWaitingTimes(response_Times);
 
+			int total_time = 0;
+			int* runningTimeline = obj.getProcessRunningTimeline(total_time);
+
 			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
 
 			string sss = "First Come First Serve";
 			form1->PopulateTable(process_ids, arivaltimes, bursttimes, completion_times, turnaround_times, waiting_times, response_Times, priorities, proc, sss);
-
+			form1->ShowGrandChart(total_time, runningTimeline, sss, runningTimeline, runningTimeline);
 			form1->ShowDialog();
 		}
 	}
@@ -813,11 +816,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		if (ddchk.checkrepetitions(total_rec, proc, recources))
 		{
-			MessageBox::Show("more than 1 processes are allocated same recource!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("more than 1 processes are allocated same recource!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (!ddchk.checkrange(total_rec, proc, recources, needed))
 		{
-			MessageBox::Show("allocated or needed recources not valid!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("allocated or needed recources not valid!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (ddchk.chkdeadlock(total_rec, proc, process_ids, recources, needed))
 		{
@@ -830,10 +833,14 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			obj.getWaitingTimes(waiting_times);
 			obj.getResponseTimes(response_Times);
 
+			int total_time = 0;
+			int* runningTimeline = obj.recordProcessExecution(total_time);
+
 			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
 
 			string sss = "Shorthes Job First (premeptive)";
 			form1->PopulateTable(process_ids, arivaltimes, bursttimes, completion_times, turnaround_times, waiting_times, response_Times, priorities, proc, sss);
+			form1->ShowGrandChart(total_time, runningTimeline, sss, runningTimeline, runningTimeline);
 
 			form1->ShowDialog();
 		}
@@ -867,11 +874,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		if (ddchk.checkrepetitions(total_rec, proc, recources))
 		{
-			MessageBox::Show("more than 1 processes are allocated same recource!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("more than 1 processes are allocated same recource!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (!ddchk.checkrange(total_rec, proc, recources, needed))
 		{
-			MessageBox::Show("allocated or needed recources not valid!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("allocated or needed recources not valid!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (ddchk.chkdeadlock(total_rec, proc, process_ids, recources, needed))
 		{
@@ -884,10 +891,14 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			objp.getWaitingTimes(waiting_times);
 			objp.getResponseTimes(response_Times);
 
+			int total_time = 0;
+			int* executionTimeline = objp.recordProcessExecution(total_time);
+
 			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
 
 			string sss = "Priority Sceduling (premeptive)";
 			form1->PopulateTable(process_ids, arivaltimes, bursttimes, completion_times, turnaround_times, waiting_times, response_Times, priorities, proc, sss);
+			form1->ShowGrandChart(total_time, executionTimeline, sss, executionTimeline, executionTimeline);
 
 			form1->ShowDialog();
 		}
@@ -929,11 +940,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		if (ddchk.checkrepetitions(total_rec, proc, recources))
 		{
-			MessageBox::Show("more than 1 processes are allocated same recource!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("more than 1 processes are allocated same recource!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (!ddchk.checkrange(total_rec, proc, recources, needed))
 		{
-			MessageBox::Show("allocated or needed recources not valid!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("allocated or needed recources not valid!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (ddchk.chkdeadlock(total_rec, proc, process_ids, recources, needed))
 		{
@@ -946,10 +957,14 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			obj.getWaitingTimes(waiting_times);
 			obj.getResponseTimes(response_Times);
 			
+			int total_time = 0;
+			int* runningTimeline = obj.recordProcessExecution(total_time);
+
 			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
 
 			string sss = "Shorthes Job First (non-premeptive)";
 			form1->PopulateTable(process_ids, arivaltimes, bursttimes, completion_times, turnaround_times, waiting_times, response_Times, priorities, proc, sss);
+			form1->ShowGrandChart(total_time, runningTimeline, sss, runningTimeline, runningTimeline);
 
 			form1->ShowDialog();
 		}
@@ -983,11 +998,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		if (ddchk.checkrepetitions(total_rec, proc, recources))
 		{
-			MessageBox::Show("more than 1 processes are allocated same recource!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("more than 1 processes are allocated same recource!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (!ddchk.checkrange(total_rec, proc, recources, needed))
 		{
-			MessageBox::Show("allocated or needed recources not valid!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("allocated or needed recources not valid!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (ddchk.chkdeadlock(total_rec, proc, process_ids, recources, needed))
 		{
@@ -999,11 +1014,13 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			obj.getTurnaroundTimes(turnaround_times);
 			obj.getWaitingTimes(waiting_times);
 			obj.getResponseTimes(response_Times);
-
+			int total_time = 0;
+			int* runningTimeline = obj.getganttChart(total_time);
 			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
 
 			string sss = "Priority Sceduling (non-premeptive)";
 			form1->PopulateTable(process_ids, arivaltimes, bursttimes, completion_times, turnaround_times, waiting_times, response_Times, priorities, proc, sss);
+			form1->ShowGrandChart(total_time, runningTimeline, sss, runningTimeline, runningTimeline);
 
 			form1->ShowDialog();
 
@@ -1047,11 +1064,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		if (ddchk.checkrepetitions(total_rec, proc, recources))
 		{
-			MessageBox::Show("more than 1 processes are allocated same recource!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("more than 1 processes are allocated same recource!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (!ddchk.checkrange(total_rec, proc, recources, needed))
 		{
-			MessageBox::Show("allocated or needed recources not valid!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("allocated or needed recources not valid!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (ddchk.chkdeadlock(total_rec, proc, process_ids, recources, needed))
 		{
@@ -1064,10 +1081,14 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			obj.getWaitingTimes(waiting_times);
 			obj.getResponseTimes(response_Times);
 
+			int total_time = 0;
+			int* runningTimeline = obj.recordProcessExecution(total_time);
+
 			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
 
 			string sss = "Round Robin";
 			form1->PopulateTable(process_ids, arivaltimes, bursttimes, completion_times, turnaround_times, waiting_times, response_Times, priorities, proc, sss);
+			form1->ShowGrandChart(total_time, runningTimeline, sss, runningTimeline, runningTimeline);
 
 			form1->ShowDialog();
 		}
@@ -1075,7 +1096,9 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 	else if (System::Convert::ToString(comboBox1->Text) == "Multilevel Sceduling")
 	{
 		process* processes = new process[proc];
-		list<process*> qu1, qu2, qu3;
+		process* processestemp = new process[proc];
+
+		list<process*> qu1, qu2, qu3, temp_q1, temp_q2, temp_q3;
 
 		for (int i = 0; i < proc; ++i)
 		{
@@ -1083,6 +1106,7 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			arrival = arivaltimes[i];
 			burst = bursttimes[i];
 			addProcess(processes, qu1, i + 1, arrival, burst);
+			addProcess(processestemp, temp_q1, i + 1, arrival, burst);
 		}
 
 		int currentTime = 0;
@@ -1108,11 +1132,11 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 
 		if (ddchk.checkrepetitions(total_rec, proc, recources))
 		{
-			MessageBox::Show("more than 1 processes are allocated same recource!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("more than 1 processes are allocated same recource!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (!ddchk.checkrange(total_rec, proc, recources, needed))
 		{
-			MessageBox::Show("allocated or needed recources not valid!", "error!", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("allocated or needed recources not valid!", "Warning!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		}
 		if (ddchk.chkdeadlock(total_rec, proc, process_ids, recources, needed))
 		{
@@ -1125,11 +1149,16 @@ private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e
 			getWaitingTimes(processes, proc, waiting_times);
 			getResponseTimes(processes, proc, response_Times);
 
-			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
+			int timeOFtimeline = getTotalTime(processes, proc);
 
+			int* timeline_q1 = recordProcessExecutionQueue(0, q1, timeOFtimeline, temp_q1, temp_q2);
+			int* timeline_q2 = recordProcessExecutionQueue(q1, q2, timeOFtimeline, temp_q2, temp_q3);
+			int* timeline_q3 = recordProcessExecutionQueue3(q2, timeOFtimeline, temp_q3);
+
+			osproj::MyForm1^ form1 = gcnew osproj::MyForm1();
 			string sss = "Multilevel Sceduling";
 			form1->PopulateTable(process_ids, arivaltimes, bursttimes, completion_times, turnaround_times, waiting_times, response_Times, priorities, proc, sss);
-
+			form1->ShowGrandChart(timeOFtimeline, timeline_q1, sss, timeline_q2, timeline_q3);
 			form1->ShowDialog();
 		}
 	}
