@@ -1,8 +1,10 @@
 #include "SJFnp.h"
 #include <climits>
 #include <cstring>
+#include <algorithm>
 
-SchedulerSJF::SchedulerSJF(int n) : numProcesses(n) {
+SchedulerSJF::SchedulerSJF(int n) : numProcesses(n)
+{
     processes = new ProcessSJ * [numProcesses];
 }
 
@@ -13,9 +15,9 @@ void SchedulerSJF::addProcess(int index, string pid, int arrival, int burst) {
 void SchedulerSJF::schedule() {
     bool* completed = new bool[numProcesses];
     memset(completed, false, sizeof(bool) * numProcesses);
-    int* processOrder = new int[numProcesses];
     int currentTime = 0;
     int completedCount = 0;
+    int* processOrder = new int[numProcesses];
 
     while (completedCount < numProcesses) {
         int idx = -1;
@@ -42,12 +44,9 @@ void SchedulerSJF::schedule() {
         }
     }
 
-    ProcessSJ** orderedProcesses = new ProcessSJ * [numProcesses];
     for (int i = 0; i < numProcesses; ++i) {
-        orderedProcesses[i] = processes[processOrder[i]];
+        processes[i]->setOrderOfExecution(processOrder[i]);
     }
-    delete[] processes;
-    processes = orderedProcesses;
 
     delete[] processOrder;
     delete[] completed;
@@ -78,9 +77,66 @@ void SchedulerSJF::getResponseTimes(int* responseTimes) {
 }
 
 void SchedulerSJF::getProcessOrder(string* processIds) {
+    int* order = new int[numProcesses];
     for (int i = 0; i < numProcesses; ++i) {
-        processIds[i] = processes[i]->getProcessId();
+        order[i] = processes[i]->getOrderOfExecution();
     }
+    for (int i = 0; i < numProcesses; ++i) {
+        processIds[i] = processes[order[i]]->getProcessId();
+    }
+    delete[] order;
+}
+
+int* SchedulerSJF::recordProcessExecution(int& total_time)
+{
+    schedule();
+    int* ari = new int[numProcesses];
+    int* comp = new int[numProcesses];
+    total_time = 0;
+
+    for (int i = 0; i < numProcesses; ++i)
+    {
+        comp[i] = processes[i]->getCompletionTime();
+        ari[i] = processes[i]->getArrivalTime();
+        if (processes[i]->getCompletionTime() > total_time)
+        {
+            total_time = processes[i]->getCompletionTime();
+        }
+    }
+
+    int* timeline = new int[total_time]();
+    string* order = new string[numProcesses];
+    getProcessOrder(order);
+
+    int* orderProc = new int[numProcesses];
+    for (int i = 0; i < numProcesses; ++i)
+    {
+        orderProc[i] = stoi(order[i]);
+    }
+    delete[] order;
+
+    int currentTime = 0;
+
+    for (int i = 0; i < numProcesses; i++)
+    {
+        int x = orderProc[i];
+
+        if (ari[x - 1] > currentTime)
+        {
+            currentTime = ari[x - 1];
+        }
+
+        int burstTime = processes[x - 1]->getBurstTime();
+        for (int j = 0; j < burstTime; j++)
+        {
+            timeline[currentTime++] = x;
+        }
+    }
+
+    delete[] orderProc;
+    delete[] ari;
+    delete[] comp;
+    return timeline;
 }
 
 SchedulerSJF::~SchedulerSJF() {
