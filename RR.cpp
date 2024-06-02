@@ -120,3 +120,55 @@ SchedulerRR::~SchedulerRR() {
     delete[] processes;
     delete[] processOrder;
 }
+
+int* SchedulerRR::recordProcessExecution(int& total_time) {
+    total_time = 0;
+    for (int i = 0; i < numProcesses; ++i) {
+        if (processes[i].completionTime > total_time) {
+            total_time = processes[i].completionTime;
+        }
+    }
+
+    int* timeline = new int[total_time]();
+
+    int* remainingTimes = new int[numProcesses];
+    for (int i = 0; i < numProcesses; ++i) {
+        remainingTimes[i] = processes[i].burstTime;
+    }
+
+    bool* completed = new bool[numProcesses]();
+    int currentTime = 0;
+
+    while (currentTime < total_time) {
+        bool allCompleted = true;
+        for (int i = 0; i < numProcesses; ++i) {
+            if (!completed[i] && processes[i].arrivalTime <= currentTime) {
+                allCompleted = false;
+
+                if (remainingTimes[i] > 0) {
+                    int timeSlice = min(quantum, remainingTimes[i]);
+                    for (int j = 0; j < timeSlice; ++j) {
+                        timeline[currentTime++] = stoi(processes[i].id);
+                    }
+                    remainingTimes[i] -= timeSlice;
+
+                    if (remainingTimes[i] == 0) {
+                        processes[i].completionTime = currentTime;
+                        processes[i].calculateTurnaroundTime();
+                        processes[i].calculateWaitingTime();
+                        completed[i] = true;
+                    }
+                }
+            }
+        }
+
+        if (allCompleted) {
+            currentTime++;
+        }
+    }
+
+    delete[] remainingTimes;
+    delete[] completed;
+
+    return timeline;
+}
