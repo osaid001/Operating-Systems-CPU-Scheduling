@@ -1,6 +1,7 @@
 #include "FCFS.h"
-#include "processFCFS.h"
+
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -79,6 +80,60 @@ void scheduler::getProcessIdsInCompletionOrder(int* process_ids) {
     }
 }
 
+int* scheduler::getProcessRunningTimeline(int& total_time) {
+    if (head == nullptr) {
+        total_time = 0;
+        return nullptr;
+    }
+
+    calcCompletionTime();
+
+    processfcfs* current = head;
+    int last_completion_time = 0;
+
+    while (current != nullptr) {
+        last_completion_time = std::max(last_completion_time, current->get_Completion_Time());
+        current = current->getnext();
+    }
+    total_time = last_completion_time;
+
+    int* timeline = new int[total_time]();
+
+    current = head;
+    while (current != nullptr) {
+        int start_time = std::max(current->get_Arrival_Time(), current->get_Completion_Time() - current->get_Burst_Time());
+        int end_time = current->get_Completion_Time();
+        for (int t = start_time; t < end_time; ++t) {
+            timeline[t] = current->get_Process_Id();
+        }
+        current = current->getnext();
+    }
+
+    return timeline;
+}
+
+
+int scheduler::get_Arrival_Time(int pid) {
+    processfcfs* process = findProcessById(pid);
+    return process ? process->get_Arrival_Time() : -1; // Return -1 if process not found
+}
+
+int scheduler::get_Burst_Time(int pid) {
+    processfcfs* process = findProcessById(pid);
+    return process ? process->get_Burst_Time() : -1; // Return -1 if process not found
+}
+
+processfcfs* scheduler::findProcessById(int pid) {
+    processfcfs* current = head;
+    while (current != nullptr) {
+        if (current->get_Process_Id() == pid) {
+            return current;
+        }
+        current = current->getnext();
+    }
+    return nullptr;
+}
+
 scheduler::~scheduler() {
     processfcfs* current = head;
     while (current != nullptr) {
@@ -87,8 +142,6 @@ scheduler::~scheduler() {
         delete temp;
     }
 }
-
-
 
 processfcfs::processfcfs(int pid, int arrival, int burst)
     : Process_Id(pid), Arrival_Time(arrival), Burst_Time(burst), next(nullptr) {}
