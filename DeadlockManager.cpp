@@ -1,3 +1,5 @@
+//this code works for recources as chars. recources names as 10 11 and so on would be treated as 1 0 1 1 respectivly
+
 #include "DeadlockManager.h"
 
 using namespace std;
